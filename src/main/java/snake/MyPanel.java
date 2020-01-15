@@ -42,14 +42,11 @@ public class MyPanel extends JPanel
 	private  char keep;
 	private  String diff;
 	private  JPanel LevelPanel;
-	private  JPanel PersPanel; 
 	private  JPanel GameOverPanel;
-	//private InputStream fontStream;
 	private StatePanel statePanel;
 	public MyPanel(StatePanel statePanel/*InputStream fontStream*/) throws IOException, FontFormatException
 	{
 		this.statePanel=statePanel;
-		//this.fontStream=fontStream;
 		food = new Rectangle2D.Double(-20, -20, 20, 20);
 		snake = new Rectangle2D[1000];
 		xSnake= new int[1000];
@@ -212,7 +209,7 @@ public class MyPanel extends JPanel
 				remove(LevelPanel);
 				revalidate();
 				repaint();
-				add(PersPanel);
+				//add(PersPanel);
 			}break;
 			case "game_to_GameOver":
 			{
