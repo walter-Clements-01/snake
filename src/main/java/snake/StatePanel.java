@@ -76,12 +76,6 @@ class StatePanel extends JPanel
 	}
 	public void setFileRecord(String diff) throws IOException
 	{
-
-		/*fileName= "/"+fileName;
-		PrintWriter writer = new PrintWriter(new File(this.getClass().getResource(fileName).getPath()));
-		URL url = MyPanel.class.getResource(fileName);
-		writer.write(record.getText());
-		writer.close();*/
 		Scores scores = ScoresUtil.load();
 		Integer scoreToUpdate = Integer.parseInt(record.getText());
 		switch(diff)

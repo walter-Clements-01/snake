@@ -1,23 +1,12 @@
 package snake;
 
-import util.ScoresUtil;
-
-import java.awt.Canvas;
 import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.FontFormatException;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
 import java.awt.GridLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
-import java.awt.geom.Rectangle2D;
 import java.io.*;
-import java.net.URL;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.Timer;
@@ -25,40 +14,26 @@ import javax.swing.Timer;
 @SuppressWarnings("serial")
 public class MyPanel extends JPanel 
 {
-	private  Rectangle2D food;
-	private  double foodX;
-	private  double foodY;
-	private  int index=3;
 	private  double width;
-	private  Rectangle2D[] snake;
-	private  int[] xSnake;
-	private  int[] ySnake;
 	private  Listener listener;
-	private  Timer t;
+	private  Timer timer;
 	private  boolean loss;
 	private  Game canvas;
-	private  boolean running;
-	private  boolean s;
-	private  char keep;
-	private  String diff;
+	private GameStatus gameStatus;
 	private  JPanel LevelPanel;
 	private  JPanel GameOverPanel;
 	private StatePanel statePanel;
-	public MyPanel(StatePanel statePanel/*InputStream fontStream*/) throws IOException, FontFormatException
+	private SnakeInfo snakeInfo;
+	public MyPanel(StatePanel statePanel) throws IOException, FontFormatException
 	{
 		this.statePanel=statePanel;
-		food = new Rectangle2D.Double(-20, -20, 20, 20);
-		snake = new Rectangle2D[1000];
-		xSnake= new int[1000];
-		ySnake= new int[1000];
-		listener = new Listener();
-		t = new Timer(0,listener);
+		snakeInfo = new SnakeInfo();
+		gameStatus = new GameStatus();
+		canvas = new Game(snakeInfo, width, statePanel, gameStatus);
+		listener = new Listener(canvas, snakeInfo, statePanel, width, gameStatus);
+		timer = new Timer(0,listener);
+		gameStatus.setTimer(timer);
 		loss= false;
-		canvas = new Game();
-		running=false;
-		s=true;
-		keep= 'd';
-		diff="";
 		canvas.setBackground(Color.black);
 		canvas.setPreferredSize(new Dimension(600,600));
 		canvas.setFocusable(true);
@@ -180,16 +155,16 @@ public class MyPanel extends JPanel
 		
 		return GameOverPanel;
 	}
-	public void setPanel(double Speed, double Width, String diff) 
+	public void setPanel(double Speed, double width, String diff)
 	{
-		this.diff=diff;
-		width=Width;
-		if(loss==false)
+		gameStatus.setDiff(diff); //TODO
+		this.width=width;
+		if(!loss)
 		{
-			setGame(Width);
+			canvas.setGame(width);
 			canvas.repaint();
 		}
-		t.setDelay((int)(Width/(Speed/1000)));
+		timer.setDelay((int)(width/(Speed/1000)));
 	}
 	public void setCurrentPanel(String key)
 	{
@@ -240,266 +215,5 @@ public class MyPanel extends JPanel
 				add(LevelPanel);
 			}break;
 		}
-	}
-	public void setGame(double Width)
-	{
-		width=Width;
-		for(int i=0;i<1000;i++)
-		{
-			snake[i] = new Rectangle2D.Double(-width,-width,width,width);
-		}
-		xSnake[0]=300;
-		ySnake[0]=300;
-		xSnake[1]=xSnake[0]-(int)width;
-		ySnake[1]=ySnake[0];
-		xSnake[2]=xSnake[1]-(int)width;
-		ySnake[2]=ySnake[1];
-		foodX=500;
-		foodY=ySnake[0];
-	}
-	public class Game extends Canvas
-	{	
-		public void paint(Graphics g)
-		{
-			Graphics2D g2D = (Graphics2D)g;
-			for(int i=0;i<index;i++)
-			{
-				g2D.setColor(Color.white);
-				snake[i].setRect(xSnake[i], ySnake[i], width, width);
-				g2D.fill(snake[i]);
-			}		
-			int j=1;
-			while(loss==false && j<index)
-			{
-				if(((xSnake[0]==xSnake[j]) && (ySnake[0]==ySnake[j])) || (xSnake[0]<0 || xSnake[0]>(600- width) || ySnake[0]<0 || ySnake[0]>(600 - width)))
-				{
-					t.stop();
-					loss=true;
-					Snake.setPanel((int) ((width*1000)/t.getDelay()), (int) width, "game_to_GameOver",diff);
-					try {statePanel.setFileRecord(diff);} catch (IOException e) {e.printStackTrace();}
-					running=false;
-				}
-				j++;
-			}
-			if((int)foodX==xSnake[0] && (int)foodY==ySnake[0])
-			{
-				int y=0;
-				foodX= Math.random()*(600-width);
-				foodY= Math.random()*(600-width);
-				for(int i=1;i<=index;i++)
-				{
-					y=i-1;
-					while(y>0)
-					{
-						if((int)foodX==xSnake[y] && ((int)foodY==ySnake[y]) || ((int)foodX%width!=0 || (int)foodY%width!=0))
-						{
-							foodX= Math.random()*(600-width);
-							foodY= Math.random()*(600-width);
-							y=i-1;
-						}
-						else
-						{
-							y--;
-						}
-					}
-				}
-				index++;
-				snake[index]=food;
-				statePanel.setLabels();
-			}
-			g2D.setColor(Color.white);
-			food.setRect((int)foodX, (int)foodY, width, width);
-			g2D.fill(food);		
-			for(int i=0;i<index;i++)
-			{
-				snake[i].setRect(xSnake[i], ySnake[i], width, width);
-				g2D.fill(snake[i]);
-			}
-		}
-	}
-	private class Listener implements KeyListener, ActionListener
-	{
-		private char key= ' ';
-		@Override
-		public void keyPressed(KeyEvent event) 
-		{
-			canvas.requestFocusInWindow();
-			if(event.getKeyCode()==KeyEvent.VK_UP || event.getKeyChar()=='w')
-			key='w';
-					
-			if(event.getKeyCode()==KeyEvent.VK_DOWN || event.getKeyChar()=='s')
-			key='s';
-					
-			if(event.getKeyCode()==KeyEvent.VK_LEFT || event.getKeyChar()=='a')
-			key='a';
-					
-			if(event.getKeyCode()==KeyEvent.VK_RIGHT || event.getKeyChar()=='d')
-			key='d';
-					
-			t.start();
-			canvas.repaint();
-		}
-		@Override
-		public void actionPerformed(ActionEvent e) 
-		{			
-			if(running)
-			{
-				for(int i=index;i>0;i--)
-				{
-					xSnake[i]=xSnake[i-1];
-					ySnake[i]=ySnake[i-1];
-				}
-				switch(key)
-				{
-				case 'w':
-					{
-						if(keep!='s')
-						{
-							ySnake[0]=ySnake[0]-(int)width;
-							keep='w';
-						}
-						else
-						{
-							ySnake[0]=ySnake[0]+(int)width;
-							key='s';
-							keep='s';
-						}
-						s=false;
-					}break;
-				case 's':
-					{
-						if(keep!='w')
-						{
-							ySnake[0]=ySnake[0]+(int)width;
-							keep='s';
-						}
-						else
-						{
-							ySnake[0]=ySnake[0]-(int)width;
-							key='w';
-							keep='w';
-						}
-						s=false;
-					}break;
-				case 'a':
-					{
-						if(keep!='d')
-						{
-							xSnake[0]=xSnake[0]-(int)width;
-							keep='a';
-						}
-						else
-						{
-							xSnake[0]=xSnake[0]+(int)width;
-							key='d';
-							keep='d';
-						}	
-						s=false;
-					}break;
-				case 'd':
-					{
-						if(keep!='a')
-						{
-							xSnake[0]=xSnake[0]+(int)width;
-							keep='d';
-						}
-						else
-						{
-							xSnake[0]=xSnake[0]-(int)width;
-							key='a';
-							keep='a';
-						}
-						s=false;
-					}break;
-					default:
-					{
-						if(s)
-						{
-							xSnake[0]=xSnake[0]+(int)width;
-							key='d';
-							keep='d';
-						}
-						
-					}
-				}
-				canvas.repaint();
-			}
-			else
-			{
-				switch(e.getActionCommand())
-				{
-					case "Slug": 
-						{
-							keep='d';
-							index=3;
-							running=true;
-							s=true;
-							loss=false;
-							Snake.setPanel(100, 20, "levels_to_game","Slug");
-							try {setInitRecord("Slug");} catch (IOException e1) {e1.printStackTrace();}
-						}break;
-					case "Worm": 
-						{
-							keep='d';
-							index=3;
-							s=true;
-							running=true;
-							loss=false;
-							Snake.setPanel(250, 20, "levels_to_game","Worm");
-							try {setInitRecord("Worm");} catch (IOException e1) {e1.printStackTrace();}
-						}break;
-					case "Python":
-						{
-							keep='d';
-							index=3;
-							s=true;
-							running=true;
-							loss=false;
-							Snake.setPanel(500, 20, "levels_to_game","Python");
-							try {setInitRecord("Python");} catch (IOException e1) {e1.printStackTrace();}
-						}break;
-					case "Black Mamba": 
-						{
-							keep='d';
-							index=3;
-							s=true;
-							running=true;
-							loss=false;
-							Snake.setPanel(875, 20, "levels_to_game","Black Mamba");
-							try {setInitRecord("Black Mamba");} catch (IOException e1) {e1.printStackTrace();}
-						}break;
-					case "Retry": 
-						{
-							keep='d';
-							index=3;
-							s=true;
-							running=true;
-							loss=false;
-							Snake.setPanel((int) ((width*1000)/t.getDelay()), (int) width, "GameOver_to_game",diff);
-						}break;
-					case "Levels": 
-						{
-							running=false;
-							loss=false;
-							Snake.setPanel(600, 20, "GameOver_to_levels","");
-						}break;
-				}
-			}
-		}
-		public void setInitRecord(String diff) throws IOException
-		{
-			Scores scores = ScoresUtil.load();
-			switch(diff)
-			{
-				case "Slug": statePanel.setLabelRecord(scores.getSlug().toString());break;
-				case "Worm": statePanel.setLabelRecord(scores.getWorm().toString());break;
-				case "Python": statePanel.setLabelRecord(scores.getPython().toString());break;
-				case "Black Mamba": statePanel.setLabelRecord(scores.getBlackMamba().toString());break;
-			}
-		}
-		@Override
-		public void keyReleased(KeyEvent e) {}
-		@Override
-		public void keyTyped(KeyEvent e) {}
 	}
 }
