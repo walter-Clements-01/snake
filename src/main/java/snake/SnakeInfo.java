@@ -17,13 +17,16 @@ public class SnakeInfo
     }
     public void addBlock()
     {
-        snakeCoords.add(new Point(0, 0));
+        snakeCoords.add(new Point(-20, -20));
     }
     public boolean isValid()
     {
+        boolean isValid = false;
         List<Point> temp = new ArrayList<>(snakeCoords);
         temp.remove(0);
-        return(!temp.contains(snakeCoords.get(0)));
+        if(!temp.contains(getHead()) && !isOverLimit())
+            isValid=true;
+        return(isValid);
     }
     public boolean isContained(Point p)
     {
@@ -49,9 +52,21 @@ public class SnakeInfo
     {
         return snakeCoords.size();
     }
+    public Point getHead()
+    {
+        return getCoords(0);
+    }
     public void clear()
     {
         snakeCoords.clear();
+    }
+    //TODO update field width
+    public boolean isOverLimit()
+    {
+        if(getHead().getX()>600 || getHead().getX()<0 || getHead().getY()>600 || getHead().getY()<0)
+            return true;
+        else
+            return false;
     }
 }
 

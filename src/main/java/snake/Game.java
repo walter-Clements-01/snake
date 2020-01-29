@@ -36,11 +36,11 @@ public class Game extends Canvas
     public void paint(Graphics g)
     {
         Graphics2D g2D = (Graphics2D)g;
-        for(int i=0;i<snake.getSize();i++) {
+        /*for(int i=0;i<snake.getSize();i++) {
             g2D.setColor(Color.white);
             snakeRect.setRect(snake.getCoords(i).x, snake.getCoords(i).y, width, width);
             g2D.fill(snakeRect);
-        }
+        }*/
         if(!snake.isValid())
         {
             gameStatus.getTimer().stop();
@@ -49,14 +49,15 @@ public class Game extends Canvas
             try {statePanel.setFileRecord(gameStatus.getDiff());} catch (IOException e) {e.printStackTrace();}
             gameStatus.setRunning(false);
         }
-        if(snake.getCoords(0)==food)
+        if(snake.getHead().equals(food))
         {
+            snake.addBlock();
             do
             {
-                food.setLocation(Math.random()*(600-width), Math.random()*(600-width));
+                //TODO fare in modo che divisione 600/width dia intero
+                food.setLocation(Math.round(Math.random()*(600/width))*width, Math.round(Math.random()*(600/width))*width);
             }
             while(snake.isContained(food));
-            snake.addBlock();
         }
         g2D.setColor(Color.white);
         foodRect.setRect(food.x, food.y, width, width);
