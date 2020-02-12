@@ -61,18 +61,18 @@ class StatePanel extends JPanel
 	public void setLabels()
 	{
 		foodEaten.setText(Integer.toString((Integer.parseInt(foodEaten.getText())+1)));
-		if(Integer.parseInt(foodEaten.getText())>Integer.parseInt(record.getText()))
-		{
+		if(Integer.parseInt(foodEaten.getText())>Integer.parseInt(record.getText())) {
 			record.setText(foodEaten.getText());
 		}
 	}
-	public String getFoodEaten()
-	{
-		return foodEaten.getText();
-	}
+//	public String getFoodEaten()
+//	{
+//		return foodEaten.getText();
+//	}
 	public  void setLabelRecord(String rec)
 	{
 		record.setText(rec);
+		System.out.println("set record"+rec);
 	}
 	public void setFileRecord(String diff) throws IOException
 	{

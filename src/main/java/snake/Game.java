@@ -1,7 +1,7 @@
 package snake;
 
 import java.awt.*;
-import java.awt.geom.Rectangle2D;
+import java.awt.geom.*;
 import java.io.IOException;
 
 public class Game extends Canvas
@@ -36,11 +36,6 @@ public class Game extends Canvas
     public void paint(Graphics g)
     {
         Graphics2D g2D = (Graphics2D)g;
-        /*for(int i=0;i<snake.getSize();i++) {
-            g2D.setColor(Color.white);
-            snakeRect.setRect(snake.getCoords(i).x, snake.getCoords(i).y, width, width);
-            g2D.fill(snakeRect);
-        }*/
         if(!snake.isValid())
         {
             gameStatus.getTimer().stop();
@@ -52,6 +47,7 @@ public class Game extends Canvas
         if(snake.getHead().equals(food))
         {
             snake.addBlock();
+            statePanel.setLabels();
             do
             {
                 //TODO fare in modo che divisione 600/width dia intero
