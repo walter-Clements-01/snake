@@ -18,12 +18,12 @@ public class Snake
 		frame.setVisible(true);
 		frame.setResizable(false);
 		System.out.println(frame.getLayout().toString());
-		setPanel(250,20,"null","");
+		setPanel(250,20,"null","", false);
 	}
-	public static void setPanel(int Speed, int Width, String key, String diff)
+	public static void setPanel(int Speed, int Width, String key, String diff, boolean loss)
 	{
 		if(!diff.equals(""))
-			myPanel.setPanel(Speed, Width, diff);
+			myPanel.setPanel(Speed, Width, diff, loss);
 		myPanel.setCurrentPanel(key);
 		frame.add(myPanel);
 		

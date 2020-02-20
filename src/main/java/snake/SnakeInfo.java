@@ -62,7 +62,7 @@ public class SnakeInfo
     //TODO update field width
     public boolean isOverLimit()
     {
-        if(getHead().getX()>600 || getHead().getX()<0 || getHead().getY()>600 || getHead().getY()<0)
+        if(getHead().getX()>580 || getHead().getX()<0 || getHead().getY()>580 || getHead().getY()<0)
             return true;
         else
             return false;

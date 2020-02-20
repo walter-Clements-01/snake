@@ -27,6 +27,7 @@ public class Game extends Canvas
     }
     public void setGame(double width)
     {
+        System.out.println("[Game.setGame]");
         this.width=width;
         snake.clear();
         snake.addBlock(new Point(300, 300));
@@ -34,14 +35,16 @@ public class Game extends Canvas
         snake.addBlock(new Point(260, 300));
         food.setLocation(500, 300);
     }
+    @Override
     public void paint(Graphics g)
     {
         Graphics2D g2D = (Graphics2D)g;
+        System.out.println("[Game.paint] snake.isValid(): " + snake.isValid());
         if(!snake.isValid())
         {
             gameStatus.getTimer().stop();
             //loss=true;
-            Snake.setPanel((int) ((width*1000)/ gameStatus.getTimer().getDelay()), (int) width, "game_to_GameOver",gameStatus.getDiff());
+            Snake.setPanel((int) ((width*1000)/ gameStatus.getTimer().getDelay()), (int) width, "game_to_GameOver",gameStatus.getDiff(), true);
             try {statePanel.setFileRecord(gameStatus.getDiff());} catch (IOException e) {e.printStackTrace();}
             gameStatus.setRunning(false);
         }
@@ -53,7 +56,7 @@ public class Game extends Canvas
             do
             {
                 //TODO fare in modo che divisione 600/width dia intero
-                food.setLocation(Math.round(Math.random()*(600/width))*width, Math.round(Math.random()*(600/width))*width);
+                food.setLocation(Math.round(Math.random()*(580/width))*width, Math.round(Math.random()*(580/width))*width);
             }
             while(snake.isContained(food));
         }

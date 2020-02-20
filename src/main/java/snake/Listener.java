@@ -125,7 +125,7 @@ public class Listener implements KeyListener, ActionListener
                     gameStatus.setRunning(true);
                     start = true;
                     //loss=false;
-                    Snake.setPanel(100, 20, "levels_to_game", gameStatus.getDiff());
+                    Snake.setPanel(100, 20, "levels_to_game", gameStatus.getDiff(), false);
                     try {
                         setInitRecord("Slug");
                     } catch (IOException e1) {
@@ -139,7 +139,7 @@ public class Listener implements KeyListener, ActionListener
                     start = true;
                     gameStatus.setRunning(true);
                     //loss = false;
-                    Snake.setPanel(250, 20, "levels_to_game", gameStatus.getDiff());
+                    Snake.setPanel(250, 20, "levels_to_game", gameStatus.getDiff(), false);
                     try {
                         setInitRecord("Worm");
                     } catch (IOException e1) {
@@ -153,7 +153,7 @@ public class Listener implements KeyListener, ActionListener
                     start = true;
                     gameStatus.setRunning(true);
                     //loss = false;
-                    Snake.setPanel(500, 20, "levels_to_game", gameStatus.getDiff());
+                    Snake.setPanel(500, 20, "levels_to_game", gameStatus.getDiff(), false);
                     try {
                         setInitRecord("Python");
                     } catch (IOException e1) {
@@ -167,7 +167,7 @@ public class Listener implements KeyListener, ActionListener
                     start = true;
                     gameStatus.setRunning(true);
                     //loss = false;
-                    Snake.setPanel(875, 20, "levels_to_game", gameStatus.getDiff());
+                    Snake.setPanel(875, 20, "levels_to_game", gameStatus.getDiff(), false);
                     try {
                         setInitRecord("Black Mamba");
                     } catch (IOException e1) {
@@ -179,15 +179,15 @@ public class Listener implements KeyListener, ActionListener
                     keep = 'd';
                     start = true;
                     gameStatus.setRunning(true);
-                    //loss = false;
-                    Snake.setPanel((int) ((width * 1000) / gameStatus.getTimer().getDelay()), (int) width, "GameOver_to_game", gameStatus.getDiff());
+                    //boolean loss = false;
+                    Snake.setPanel((int) ((width * 1000) / gameStatus.getTimer().getDelay()), (int) width, "GameOver_to_game", gameStatus.getDiff(), false);
                 }
                 break;
                 case "Levels": {
                     gameStatus.setDiff("");
                     gameStatus.setRunning(false);
                     //loss = false;
-                    Snake.setPanel(600, 20, "GameOver_to_levels", gameStatus.getDiff());
+                    Snake.setPanel(600, 20, "GameOver_to_levels", gameStatus.getDiff(), false);
                 }
                 break;
             }

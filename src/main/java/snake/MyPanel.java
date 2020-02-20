@@ -17,7 +17,6 @@ public class MyPanel extends JPanel
 	private  double width;
 	private  Listener listener;
 	private  Timer timer;
-	private  boolean loss;
 	private  Game canvas;
 	private GameStatus gameStatus;
 	private  JPanel LevelPanel;
@@ -33,7 +32,6 @@ public class MyPanel extends JPanel
 		listener = new Listener(canvas, snakeInfo, statePanel, width, gameStatus);
 		timer = new Timer(0,listener);
 		gameStatus.setTimer(timer);
-		loss= false;
 		canvas.setBackground(Color.black);
 		canvas.setPreferredSize(new Dimension(600,600));
 		canvas.setFocusable(true);
@@ -155,7 +153,7 @@ public class MyPanel extends JPanel
 		
 		return GameOverPanel;
 	}
-	public void setPanel(double Speed, double width, String diff)
+	public void setPanel(double Speed, double width, String diff, boolean loss)
 	{
 		gameStatus.setDiff(diff); //TODO
 		this.width=width;
