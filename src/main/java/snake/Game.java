@@ -3,6 +3,7 @@ package snake;
 import java.awt.*;
 import java.awt.geom.*;
 import java.io.IOException;
+import java.util.function.DoubleToIntFunction;
 
 public class Game extends Canvas
 {
@@ -46,6 +47,7 @@ public class Game extends Canvas
         }
         if(snake.getHead().equals(food))
         {
+
             snake.addBlock();
             statePanel.setLabels();
             do
